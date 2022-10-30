@@ -10,7 +10,7 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import useInfiniteScroll from '../../hooks/useInfiniteScroll';
 
 function Issues() {
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const target = useRef(null);
   const issues = useContext(IssuesContext);
   const getIssues = useAxios(issueAPI.getIssues);
@@ -22,7 +22,7 @@ function Issues() {
   });
 
   useEffect(() => {
-    setLoading(true);
+    setIsLoading(true);
     getIssues(
       [],
       { state: 'open', sort: 'comments', per_page: 20, page: count },
@@ -30,7 +30,7 @@ function Issues() {
         onSuccess: data => {
           if (count === 1) issues.set(data);
           else issues.add(data);
-          setLoading(false);
+          setIsLoading(false);
         },
         onError: state => {
           navigate('/error', { state });
@@ -45,7 +45,7 @@ function Issues() {
         <Issue key={issue.number} issue={issue} idx={idx} />
       ))}
 
-      {loading && (
+      {isLoading && (
         <LoadingContainer>
           <LoadingSpinner />
         </LoadingContainer>
