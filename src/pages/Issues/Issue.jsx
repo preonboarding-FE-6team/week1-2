@@ -7,12 +7,12 @@ import parseDate from '../../utils/parseDate';
 const adURL =
   'https://image.wanted.co.kr/optimize?src=https%3A%2F%2Fstatic.wanted.co.kr%2Fimages%2Fuserweb%2Flogo_wanted_black.png&w=110&q=100';
 
-function Issue({ issue: { number, title, user, created_at: date, comments }, idx }) {
+function Issue({ issue: { number, title, user, created_at: date, comments, body }, idx }) {
   const createdAt = parseDate(date);
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/${number}`);
+    navigate(`/${number}`, { state: { number, title, user, createdAt, comments, body } });
   };
 
   return (
