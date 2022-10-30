@@ -12,13 +12,13 @@ const DEFAULT_CONFIG = {
 const axiosInstance = axios.create(DEFAULT_CONFIG);
 
 axiosInstance.interceptors.request.use(
-  config => config,
+  (config) => config,
   () => ({ message: '런타임 에러가 발생했습니다.' })
 );
 
 axiosInstance.interceptors.response.use(
-  config => config,
-  error => error.response
+  (config) => config,
+  (error) => error.response
 );
 
 const issueAPI = {

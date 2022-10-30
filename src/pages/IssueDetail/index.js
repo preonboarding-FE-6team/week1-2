@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import IssueDetailHeader from './IssueDetailHeader';
 import Markdown from '../../components/Markdown';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -10,28 +10,32 @@ import parseDate from '../../utils/parseDate';
 import { flexBox } from '../../styles/mixin';
 
 function Issues() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [issue, setIssue] = useState({});
   const { id } = useParams();
   const getIssue = useAxios(issueAPI.getIssue);
   const navigate = useNavigate();
+  const { state } = useLocation();
 
   useEffect(() => {
-    setIsLoading(true);
-
-    getIssue(
-      [id],
-      {},
-      {
-        onSuccess: ({ user, number, title, created_at: createdAt, comments, body }) => {
-          setIssue({ user, number, title, createdAt: parseDate(createdAt), comments, body });
-          setIsLoading(false);
-        },
-        onError: state => {
-          navigate('/error', { state });
-        },
-      }
-    );
+    if (!state) {
+      setIsLoading(true);
+      getIssue(
+        [id],
+        {},
+        {
+          onSuccess: ({ user, number, title, created_at: createdAt, comments, body }) => {
+            setIssue({ user, number, title, createdAt: parseDate(createdAt), comments, body });
+            setIsLoading(false);
+          },
+          onError: (errorState) => {
+            navigate('/error', { errorState });
+          },
+        }
+      );
+    } else {
+      setIssue(state);
+    }
   }, []);
 
   return (
