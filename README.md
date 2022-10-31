@@ -3,7 +3,7 @@
 
 # **📖 1주차 과제 2 - Best Practice**
 
-### **과제목적 : 깃허브 issue api를 사용한 웹사이트 구축 후 Best Pratice 산출**
+### **과제목적 : 깃허브 issue api를 사용한 웹사이트 구축 후 Best Practice 산출**
 
 > 기간 :2022년 10월 29일(토) - 2022년 10월 31일(월)
 
