@@ -82,7 +82,6 @@
 
 ## 1. 이슈 목록 화면
 
----
 
 [GitHub API](https://docs.github.com/en/rest)를 사용하여 https://github.com/angular/angular-cli 프로젝트의 Issue 이슈 목록과 상세 내용을 불러옵니다
 
@@ -124,7 +123,6 @@
 
 ## 2. 이슈 목록 상세 화면
 
----
 
 <img width="895" alt="image" src="https://user-images.githubusercontent.com/42020919/198911384-71359f41-cd2f-4675-9678-82bdb13ad4df.png">
 
@@ -154,7 +152,6 @@
 
 ## **3. API 서버통신**
 
----
 
 - 코드 설계 방식
   API에 필요한 파라미터와 토큰 값을 `axios`에서 제공하는 인터셉터를 통해 관리함으로써 \*\*추후 확장과 수정에 용이하도록 설계하였습니다.
@@ -244,8 +241,6 @@
 
 ## **4. 스타일**
 
----
-
 ### 4-1. 반응형 구현
 
 ![media](https://user-images.githubusercontent.com/42020919/198911406-98eb3547-8ee0-4c74-8646-d76ba82daf3b.gif)
@@ -316,13 +311,11 @@ export default colors;
 
 ## **5. 상태관리**
 
----
 
 - <b>useContext()</b>를 사용하여 효율적인 props 전달
 
 ## **6.** 로딩처리
 
----
 
 ```jsx
 const [loading, setLoading] = useState(true);
@@ -358,7 +351,7 @@ useEffect(() => {
 
 - 데이터 요청 중 로딩 표시
 
-## 7**.** 에러화면
+## **7.** 에러화면
 
 ![image](https://user-images.githubusercontent.com/42020919/198911496-5354ccee-a9bb-43ab-937c-7c5d60603e26.png)
 
