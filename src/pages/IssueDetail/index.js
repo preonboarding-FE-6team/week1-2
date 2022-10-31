@@ -29,7 +29,7 @@ function Issues() {
             setIsLoading(false);
           },
           onError: (errorState) => {
-            navigate('/error', { errorState });
+            navigate('/error', { state: errorState });
           },
         }
       );
