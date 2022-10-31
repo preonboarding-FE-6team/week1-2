@@ -7,7 +7,7 @@
 
 > 기간 :2022년 10월 29일(토) - 2022년 10월 31일(월)
 
-**📎[배포링크 바로가기](https://best-practice-todo-list.vercel.app/)**
+**📎[배포링크 바로가기](https://angular-cli-issue.vercel.app/)**
 
 # **👨‍👩‍👧‍👦 Members**
 
@@ -89,37 +89,81 @@
 
 <img width="645" alt="image" src="https://user-images.githubusercontent.com/42020919/198911133-2a43f0cd-56b8-475e-90a9-5bb75b372499.png">
 
-- 5번째 셀에는 광고 이미지 출력
 - 광고 삽입을 위한 useBanner 훅 설계하여 동적으로 광고를 삽입할 수 있도록 수정
 - 코드 설계 방식
 
-  ```jsx
-  {
-    insertBanner(issues.list.map((issue, idx) => <Issue key={issue.number} issue={issue} idx={idx} />));
-  }
+    
+    ```jsx
+    
+    {insertBanner(issues.list.map((issue, idx) => <Issue key={issue.number} issue={issue} idx={idx} />))}
+    
+    function useBanner({ order, imgSrc, href }) {
+      return (list) => {
+        if (list.length < order - 1) {
+          return list;
+        }
+        const bannerInsertedList = [...list];
+        bannerInsertedList.splice(order - 1, 0, <Banner key={`banner-${order}`} imgSrc={imgSrc} href={href} />);
+        return bannerInsertedList;
+      };
+    }
+    
+    ```
+    
+    ```jsx
+    function Issues() {
+      const [isLoading, setIsLoading] = useState(true);
+      const target = useRef(null);
+      const issues = useContext(IssuesContext);
+      const getIssues = useAxios(issueAPI.getIssues);
+      const navigate = useNavigate();
+      const { count } = useInfiniteScroll({
+        target,
+        targetArray: issues.list,
+        pageSize: 20,
+      });
+      const insertBanner = useBanner({ order: 5, imgSrc: url.WANTED_IMG, href: url.WANTED });
+    
+      useEffect(() => {
+        setIsLoading(true);
+        getIssues(
+          [],
+          { state: 'open', sort: 'comments', per_page: 20, page: count },
+          {
+            onSuccess: (data) => {
+              if (count === 1) issues.set(data);
+              else issues.add(data);
+              setIsLoading(false);
+            },
+            onError: (state) => {
+              navigate('/error', { state });
+            },
+          }
+        );
+      }, [count]);
+    
+      return (
+        <Container ref={target}>
+          {insertBanner(issues.list.map((issue, idx) => <Issue key={issue.number} issue={issue} idx={idx} />))}
+          {isLoading && (
+            <LoadingContainer>
+              <LoadingSpinner />
+            </LoadingContainer>
+          )}
+        </Container>
+      );
+    }
+    ```
 
-  function useBanner({ order, imgSrc, href }) {
-    return (list) => {
-      if (list.length < order - 1) {
-        return list;
-      }
-      const bannerInsertedList = [...list];
-      bannerInsertedList.splice(order - 1, 0, <Banner key={`banner-${order}`} imgSrc={imgSrc} href={href} />);
-      return bannerInsertedList;
-    };
-  }
-  ```
 
 ### 1-2. 인피니트 스크롤
 
 ![scroll](https://user-images.githubusercontent.com/42020919/198911246-27b2f7a6-7424-4f78-8324-e7f15f3a5da7.gif)
 
+- Intersection Observer API를 이용해 구현
 - 화면을 아래로 스크롤 할 시 이슈 목록 추가 로딩
-- 코드 설계 방식
 
-  ```jsx
 
-  ```
 
 ## 2. 이슈 목록 상세 화면
 
@@ -127,32 +171,35 @@
 <img width="895" alt="image" src="https://user-images.githubusercontent.com/42020919/198911384-71359f41-cd2f-4675-9678-82bdb13ad4df.png">
 
 - `react-markdown` 라이브러리를 통하여 이슈 상세 내용 표시
-  ```jsx
-  <MarkdownStyle>
-    <Markdown>{issue?.body}</Markdown>
-  </MarkdownStyle>
-  ```
-  - 추가적인 마크다운 스타일 구성
+    
+    ```jsx
+    <MarkdownStyle>
+      <Markdown>{issue?.body}</Markdown>
+    </MarkdownStyle>
+    ```
+    
+    - 추가적인 마크다운 스타일 구성
 - 코드 설계 방식
-  `git repository` API 구조상 issue리스트 에도 각각의 item에 내용(body) 파라미터가 지정되어 있어 body 값을 확인할 수 없을 때 HTTP 요청하도록 설계하였습니다.
-  ```jsx
-  const handleClick = () => {
-    navigate(`/${number}`, { state: { ... } });
-  };
-  ```
-  ```jsx
-  useEffect(() => {
-      if (!state) {
-        getIssue(...);
-      } else {
-        setIssue(state);
-      }
-   }, []);
-  ```
+    
+    `git repository` API 구조상 issue리스트 에도 각각의 item에 내용(body) 파라미터가 지정되어 있어 body 값을 확인할 수 없을 때 HTTP 요청하도록 설계
+    
+    ```jsx
+    const handleClick = () => {
+      navigate(`/${number}`, { state: { ... } });
+    };
+    ```
+    
+    ```jsx
+    useEffect(() => {
+        if (!state) {
+          getIssue(...);
+        } else {
+          setIssue(state);
+        }
+     }, []);
+    ```
 
 ## **3. API 서버통신**
-
-
 - 코드 설계 방식
   API에 필요한 파라미터와 토큰 값을 `axios`에서 제공하는 인터셉터를 통해 관리함으로써 \*\*추후 확장과 수정에 용이하도록 설계하였습니다.
 
@@ -197,47 +244,51 @@
   ```
 
 ### **3-2. 에러메시지 처리**
+![image](https://user-images.githubusercontent.com/42020919/198911496-5354ccee-a9bb-43ab-937c-7c5d60603e26.png)
 
 - 코드 설계 방식
-  잘못된 접근 경로 또는 HTTP 통신 중 에러가 발생하였을 때 별도의 에러 페이지로 이동할 수 있도록 설계하였습니다.
-
-  ```jsx
-  //axios instance call
-  getIssues(
-    [],
-    { ... },
-    {
-      onSuccess: data => {
-            ...
-      },
-      onError: state => {
-        navigate('/error', { state });
-      },
-    }
-  );
-  ```
-
-  ```jsx
-  function Error() {
-    const { state } = useLocation();
-    const navigate = useNavigate();
-
-    const onClick = () => navigate(-2);
-
-    if (!state) return <Navigate to="/" />;
-
-    return (
-      <Container>
-        <span>{state?.status}</span> {state?.errorMsg}
-        <Button type="button" onClick={onClick}>
-          go back
-        </Button>
-      </Container>
+    - 올바르지 않은 경로 접근시 에러화면 구현
+    - 상태코드와 에러메시지를 `useNavigate`의 state로 넘기고 `useLocation`으로 state를 받아와 화면에 렌더
+    - 잘못된 접근 경로 또는 HTTP 통신 중 에러가 발생하였을 때 별도의 에러 페이지로 이동할 수 있도록 설계
+    
+    ```jsx
+    //axios instance call
+    getIssues(
+      [],
+      { ... },
+      {
+        onSuccess: data => {
+    			...
+        },
+        onError: state => {
+          navigate('/error', { state });
+        },
+      }
     );
-  }
+    ```
+    
+    ```jsx
+    function Error() {
+      const { state } = useLocation();
+      const navigate = useNavigate();
+    
+      const onClick = () => navigate(-2);
+    
+      if (!state) return <Navigate to="/" />;
+    
+      return (
+        <Container>
+          <span>{state?.status}</span> {state?.errorMsg}
+          <Button type="button" onClick={onClick}>
+            go back
+          </Button>
+        </Container>
+      );
+    }
+    
+    	export default Error
+    ```
 
-  export default Error;
-  ```
 
 ## **4. 스타일**
 
@@ -313,9 +364,32 @@ export default colors;
 
 
 - <b>useContext()</b>를 사용하여 효율적인 props 전달
+```jsx
+import { createContext, useCallback, useMemo, useState } from 'react';
+
+const IssuesContext = createContext();
+
+function IssuesProvider({ children }) {
+  const [issues, setIssues] = useState([]);
+
+  const set = useCallback(issues => {
+    setIssues(issues);
+  }, []);
+
+  const add = useCallback(nextIssues => {
+    setIssues(cur => [...cur, ...nextIssues]);
+  }, []);
+
+  const value = useMemo(() => ({ list: issues, add, set }), [issues]);
+
+  return <IssuesContext.Provider value={value}>{children}</IssuesContext.Provider>;
+}
+
+export { IssuesProvider, IssuesContext };
+```
+
 
 ## **6.** 로딩처리
-
 
 ```jsx
 const [loading, setLoading] = useState(true);
@@ -350,12 +424,6 @@ useEffect(() => {
 ```
 
 - 데이터 요청 중 로딩 표시
-
-## **7.** 에러화면
-
-![image](https://user-images.githubusercontent.com/42020919/198911496-5354ccee-a9bb-43ab-937c-7c5d60603e26.png)
-
-- 올바르지 않은 경로 접근시 에러화면 구현
 
 # **📢 프로젝트 실행방법**
 
