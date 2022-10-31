@@ -52,31 +52,39 @@
 
 ```
 📦src
- ┣ 📂api
- ┃ ┗ 📜api.js
- ┣ 📂assets
  ┣ 📂components
- ┃ ┣ 📜IssueHeader.jsx
- ┃ ┗ 📜IssueListItem.jsx
- ┣ 📂context
- ┃ ┗ 📜context.jsx
+ ┃ ┣ 📜Header.jsx
+ ┃ ┣ 📜LoadingSpinner.jsx
+ ┃ ┗ 📜Markdown.jsx
+ ┣ 📂constants
+ ┃ ┗ 📜url.js
+ ┣ 📂contexts
+ ┃ ┗ 📜issuesContext.js
  ┣ 📂hooks
- ┃ ┗ 📜useAxios.js
+ ┃ ┣ 📜useAxios.js
+ ┃ ┣ 📜useBanner.jsx
+ ┃ ┗ 📜useInfiniteScroll.js
  ┣ 📂pages
- ┃ ┣ 📂IssueList
+ ┃ ┣ 📂Error
  ┃ ┃ ┗ 📜index.jsx
- ┃ ┗ 📂IssueListDetail
+ ┃ ┣ 📂IssueDetail
+ ┃ ┃ ┣ 📜IssueDetailHeader.jsx
+ ┃ ┃ ┗ 📜index.js
+ ┃ ┗ 📂Issues
+ ┃ ┃ ┣ 📜Issue.jsx
  ┃ ┃ ┗ 📜index.jsx
  ┣ 📂styles
- ┃ ┣ 📜GlobalStyle.js
- ┃ ┗ 📜Theme.js
+ ┃ ┣ 📜GlobalStyles.js
+ ┃ ┣ 📜mixin.js
+ ┃ ┗ 📜theme.js
  ┣ 📂utils
- ┃ ┗ 📜axios.js
+ ┃ ┣ 📜api.js
+ ┃ ┗ 📜parseDate.js
  ┣ 📜App.jsx
  ┗ 📜index.jsx
 ```
 
-- 컴포넌트(components), 훅스(hooks), 상태관리(store), 함수(utils)로 직관적인 폴더명을 사용함으로써 구조 파악이 원활
+- 페이지(page), 컴포넌트(components), 훅스(hooks), 상태관리(context), api(utils)로 직관적인 폴더명을 사용함으로써 구조 파악이 원활
 
 # **👍 Best Practice**
 
