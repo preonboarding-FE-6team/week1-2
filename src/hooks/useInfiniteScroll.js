@@ -14,12 +14,12 @@ const useInfiniteScroll = ({
   const observer = useMemo(
     () =>
       new IntersectionObserver(
-        (entries, observer) => {
+        ([{ isIntersecting }], observer) => {
           if (target?.current === null) {
             return;
           }
-          if (entries[0].isIntersecting) {
-            setCount(v => v + 1);
+          if (isIntersecting) {
+            setCount((cur) => cur + 1);
             observer.disconnect();
           }
         },

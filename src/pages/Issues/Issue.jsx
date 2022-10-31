@@ -4,40 +4,26 @@ import styled from 'styled-components';
 import { flexBox } from '../../styles/mixin';
 import parseDate from '../../utils/parseDate';
 
-const adURL =
-  'https://image.wanted.co.kr/optimize?src=https%3A%2F%2Fstatic.wanted.co.kr%2Fimages%2Fuserweb%2Flogo_wanted_black.png&w=110&q=100';
-
-function Issue({ issue: { number, title, user, created_at: date, comments }, idx }) {
+function Issue({ issue: { number, title, user, created_at: date, comments, body }, idx }) {
   const createdAt = parseDate(date);
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/${number}`);
+    navigate(`/${number}`, { state: { number, title, user, createdAt, comments, body } });
   };
 
   return (
-    <>
-      {idx === 4 && (
-        <a href="https://www.wanted.co.kr/">
-          <Advertisement>
-            <span>ad</span>
-            <img alt="ad" src={adURL} />
-          </Advertisement>
-        </a>
-      )}
-
-      <Container>
-        <Title onClick={handleClick}>
-          #{number} <span>{title}</span>
-        </Title>
-        <Information>
-          <div>
-            {createdAt} by {user.login}
-          </div>
-          <div>comments: {comments}</div>
-        </Information>
-      </Container>
-    </>
+    <Container>
+      <Title onClick={handleClick}>
+        #{number} <span>{title}</span>
+      </Title>
+      <Information>
+        <div>
+          {createdAt} by {user.login}
+        </div>
+        <div>comments: {comments}</div>
+      </Information>
+    </Container>
   );
 }
 
@@ -75,31 +61,4 @@ const Information = styled.div`
   margin-top: 10px;
   font-size: 15px;
   color: ${({ theme }) => theme.grayColor};
-`;
-
-const Advertisement = styled.div`
-  position: relative;
-  ${flexBox()}
-  height: 80px;
-  border-bottom: 1px solid ${({ theme }) => theme.borderColor};
-  cursor: pointer;
-
-  > span {
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    padding: 3px 8px;
-    border-radius: 5px;
-    background-color: ${({ theme }) => theme.pointColor};
-    color: white;
-    font-size: 14px;
-  }
-
-  > img {
-    height: 100%;
-  }
-
-  &:hover {
-    background-color: ${({ theme }) => theme.backgroundColor};
-  }
 `;

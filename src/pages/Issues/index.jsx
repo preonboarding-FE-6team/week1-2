@@ -8,9 +8,11 @@ import issueAPI from '../../utils/api';
 import Issue from './Issue';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import useInfiniteScroll from '../../hooks/useInfiniteScroll';
+import useBanner from '../../hooks/useBanner';
+import url from '../../constants/url';
 
 function Issues() {
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const target = useRef(null);
   const issues = useContext(IssuesContext);
   const getIssues = useAxios(issueAPI.getIssues);
@@ -20,19 +22,20 @@ function Issues() {
     targetArray: issues.list,
     pageSize: 20,
   });
+  const insertBanner = useBanner({ order: 5, imgSrc: url.WANTED_IMG, href: url.WANTED });
 
   useEffect(() => {
-    setLoading(true);
+    setIsLoading(true);
     getIssues(
       [],
       { state: 'open', sort: 'comments', per_page: 20, page: count },
       {
-        onSuccess: data => {
+        onSuccess: (data) => {
           if (count === 1) issues.set(data);
           else issues.add(data);
-          setLoading(false);
+          setIsLoading(false);
         },
-        onError: state => {
+        onError: (state) => {
           navigate('/error', { state });
         },
       }
@@ -41,11 +44,8 @@ function Issues() {
 
   return (
     <Container ref={target}>
-      {issues.list.map((issue, idx) => (
-        <Issue key={issue.number} issue={issue} idx={idx} />
-      ))}
-
-      {loading && (
+      {insertBanner(issues.list.map((issue, idx) => <Issue key={issue.number} issue={issue} idx={idx} />))}
+      {isLoading && (
         <LoadingContainer>
           <LoadingSpinner />
         </LoadingContainer>
